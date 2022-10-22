@@ -4,6 +4,7 @@ import {
   selectBreakLength,
   selectSessionLength,
   selectTimeLeft,
+  selectTimerLabel,
   selectAudio,
   reset, 
   breakDecrement, 
@@ -11,7 +12,8 @@ import {
   sessionIncrement, 
   sessionDecrement,
   countDown,
-  newCountdownBegins
+  newCountDown,
+  newCountdownBegins,
 } from './clockSlice';
 //import styles from './Clock.module.css';
 
@@ -21,6 +23,7 @@ export function Clock() {
     const sessionLength = useSelector(selectSessionLength);
     const timeLeft = useSelector(selectTimeLeft);
     const audio = useSelector(selectAudio);
+    const label = useSelector(selectTimerLabel);
   const dispatch = useDispatch();
  // const [incrementAmount, setIncrementAmount] = useState('2');
  // const incrementValue = Number(incrementAmount) || 0;
@@ -57,26 +60,22 @@ export function Clock() {
 
 
 
- let timerLabel = ""
-
- if (timeLeft===0){
- setTimeout(function(){
- 
-    timerLabel= "Break"
-    const audioStart = new Audio(audio);
-    audioStart.play();
-  }, 1000);
-  
-   dispatch(breakDecrement());
-   dispatch(countDown())
-   dispatch(newCountdownBegins());
+function clockify() {
+  if (timeLeft <0)
+  return '00:00';
+  let minutes = Math.floor(timeLeft / 60);
+  let seconds = timeLeft - minutes * 60;
+  seconds = seconds < 10 ? '0' + seconds : seconds;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  return minutes + ':' + seconds;
 }
+  
+  
 
-else{ timerLabel="Session"}
- 
-  
-  
-  
+if (timeLeft===0){
+  const audioStart = document.getElementById("beep"); 
+  audioStart.play();
+  dispatch(countDown())}
 
 
   return (
@@ -94,24 +93,15 @@ else{ timerLabel="Session"}
       <div id="session-length">{sessionLength}</div>
       <button id="session-increment" type="button"  onClick={() => dispatch(sessionIncrement())}>session-increment</button>
       </div>
-      <div id="timer-label">{timerLabel}</div>
-      <h3 id="time-left">{moment(timeLeft).format("mm:ss")}</h3>
+      <h4 id="timer-label">{label}</h4>
+      <h3 id="time-left">{clockify()}</h3>
+      {/*<h3 id="time-left">{moment(timeLeft).format("mm:ss")}</h3> */}
       <button id="start_stop" type="button"   onClick={() => dispatch(countDown())}>start_stop</button>
       <button id="reset" type="button" onClick={() => dispatch(reset())}>reset</button>
      {/* <h2>{count}</h2>  */}
       <audio id="beep" src={audio}></audio>
       {/*
-
-
-User Story #8: I can see an element with corresponding id="time-left". NOTE: Paused or running, the value in this field should always be displayed in mm:ss format (i.e. 25:00).
-
-User Story #22: When a session countdown reaches zero (NOTE: timer MUST reach 00:00), and a new countdown begins, the element with the id of timer-label should display a string indicating a break has begun.
-
 User Story #23: When a session countdown reaches zero (NOTE: timer MUST reach 00:00), a new break countdown should begin, counting down from the value currently displayed in the id="break-length" element.
-
-User Story #24: When a break countdown reaches zero (NOTE: timer MUST reach 00:00), and a new countdown begins, the element with the id of timer-label should display a string indicating a session has begun.
-
-User Story #25: When a break countdown reaches zero (NOTE: timer MUST reach 00:00), a new session countdown should begin, counting down from the value currently displayed in the id="session-length" element.
 
 */}
     </div>
