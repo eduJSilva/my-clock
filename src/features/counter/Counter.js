@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+
 import {
   decrement,
   increment,
@@ -7,15 +8,18 @@ import {
   incrementAsync,
   incrementIfOdd,
   selectCount,
+  startTime
 } from './counterSlice';
 import styles from './Counter.module.css';
 
 export function Counter() {
+  
   const count = useSelector(selectCount);
+  let countdown = count;
   const dispatch = useDispatch();
-  const [incrementAmount, setIncrementAmount] = useState('2');
-
+  const [incrementAmount, setIncrementAmount] = useState('1');
   const incrementValue = Number(incrementAmount) || 0;
+  
 
   return (
     <div>
@@ -36,6 +40,7 @@ export function Counter() {
           +
         </button>
       </div>
+      <div><p>{countdown}</p></div>
       <div className={styles.row}>
         <input
           className={styles.textbox}
@@ -51,13 +56,13 @@ export function Counter() {
         </button>
         <button
           className={styles.asyncButton}
-          onClick={() => dispatch(incrementAsync(incrementValue))}
+          onClick={()=>dispatch(incrementAsync(incrementValue))}
         >
           Add Async
         </button>
         <button
           className={styles.button}
-          onClick={() => dispatch(incrementIfOdd(incrementValue))}
+          onClick={() =>dispatch(startTime())}
         >
           Add If Odd
         </button>
