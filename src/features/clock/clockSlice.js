@@ -158,7 +158,7 @@ if (stateChange===false){
     dispatch(changeLabel("Session"));
       dispatch(countDown());
       stateChange= true;
-    },0)
+    },1000)
     }
  
 if (stateChange===true){
@@ -171,7 +171,8 @@ if (stateChange===true){
       dispatch(changeLabel("Break"));
       dispatch(countDown());
       stateChange= false;     
-      },2000)
+      },1000)
+      
 }
 
 
