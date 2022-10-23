@@ -1,5 +1,14 @@
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch} from 'react-redux';
+import {useRef } from 'react';
+
+import { Button } from 'react-bootstrap';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+
 import moment from 'moment';
+
 import {
   selectBreakLength,
   selectSessionLength,
@@ -12,98 +21,86 @@ import {
   sessionIncrement, 
   sessionDecrement,
   countDown,
-  newCountDown,
-  newCountdownBegins,
 } from './clockSlice';
-//import styles from './Clock.module.css';
 
 export function Clock() {
-  //const count = useSelector(selectCount);
     const breakLength = useSelector(selectBreakLength);
     const sessionLength = useSelector(selectSessionLength);
     const timeLeft = useSelector(selectTimeLeft);
     const audio = useSelector(selectAudio);
     const label = useSelector(selectTimerLabel);
-  const dispatch = useDispatch();
- // const [incrementAmount, setIncrementAmount] = useState('2');
- // const incrementValue = Number(incrementAmount) || 0;
 
-/*
- function useInterval(callback, delay) {
-  const savedCallback = useRef();
+    const dispatch = useDispatch();
 
-  // Remember the latest callback.
-  useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  // Set up the interval.
-  useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
-}
-
-
- let [count, setCount] = useState(25);
-
-  useInterval(() => {
-    if(console.log()=== "d"){}
-    setCount(count - 1);
-  }, 1000);
-*/
-
-
-
-function clockify() {
+    const audioRef = useRef(null);
+ 
+function timer() {
   if (timeLeft <0)
   return '00:00';
-  let minutes = Math.floor(timeLeft / 60);
-  let seconds = timeLeft - minutes * 60;
-  seconds = seconds < 10 ? '0' + seconds : seconds;
-  minutes = minutes < 10 ? '0' + minutes : minutes;
-  return minutes + ':' + seconds;
+  if (timeLeft ===3600)
+  return '60:00';
+ return moment(timeLeft*1000).format("mm:ss")
 }
   
-  
-
 if (timeLeft===0){
-  const audioStart = document.getElementById("beep"); 
-  audioStart.play();
+  audioRef.current.play();
   dispatch(countDown())}
 
 
   return (
-    <div>
-      <h1>25 + 5 Clock</h1>
-      <div id="break-label">Break Length</div>
-      <div id="session-label">Session Length</div>
-      <div>
-      <button  id="break-decrement" type="button"   onClick={() => dispatch(breakDecrement())}>break-decrement</button>
-      <div id="break-length">{breakLength}</div>
-      <button  id="break-increment" type="button"  onClick={() => dispatch(breakIncrement())}>break-increment</button>
-      </div>
-      <div>
-      <button id="session-decrement" type="button"  onClick={() => dispatch(sessionDecrement())}>session-decrement</button>
-      <div id="session-length">{sessionLength}</div>
-      <button id="session-increment" type="button"  onClick={() => dispatch(sessionIncrement())}>session-increment</button>
-      </div>
-      <h4 id="timer-label">{label}</h4>
-      <h3 id="time-left">{clockify()}</h3>
-      {/*<h3 id="time-left">{moment(timeLeft).format("mm:ss")}</h3> */}
-      <button id="start_stop" type="button"   onClick={() => dispatch(countDown())}>start_stop</button>
-      <button id="reset" type="button" onClick={() => dispatch(reset())}>reset</button>
-     {/* <h2>{count}</h2>  */}
-      <audio id="beep" src={audio}></audio>
-      {/*
-User Story #23: When a session countdown reaches zero (NOTE: timer MUST reach 00:00), a new break countdown should begin, counting down from the value currently displayed in the id="break-length" element.
+    <Container fluid="md">
+    <Card className="text-center">
+      <Card.Header style={{backgroundImage:`url("https://images.pexels.com/photos/707582/pexels-photo-707582.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")`, border: '6px outset', borderRadius: '2%'}}><h1>25 + 5 Clock</h1></Card.Header>
+    </Card>
 
-*/}
-    </div>
+  <Row>
+    <Col md="5"> 
+      <Row><p id="session-label"><b>Session Length</b></p></Row>
+      <Row className="counter">
+        <Col md="2">
+          <Button id="session-decrement" type="button"  onClick={() => dispatch(sessionDecrement())} className="btn btn-default">-</Button>        
+        </Col>
+        <Col md="1">
+        <div id="session-length">{sessionLength}</div>
+        </Col>
+        <Col md="2">
+          <Button id="session-increment" type="button"  onClick={() => dispatch(sessionIncrement())} className="btn btn-default">+</Button>
+        </Col>
+      </Row>
+    </Col>
+    <Col md="2"></Col>
+    <Col md="5"> 
+      <Row><p id="break-label"><b>Break Length</b></p></Row>
+      <Row className="counter">
+        <Col md="2">
+          <Button id="break-decrement" type="button"   onClick={() => dispatch(breakDecrement())} className="btn btn-default">-</Button>        
+        </Col>
+        <Col md="1">
+        <div id="break-length">{breakLength}</div>
+        </Col>
+        <Col md="2">
+          <Button id="break-increment" type="button"  onClick={() => dispatch(breakIncrement())} className="btn btn-default">+</Button>
+        </Col>
+      </Row>
+    </Col>
+  </Row>
+  <br/>
+  <Row id="statRow">
+  <h3 id="timer-label"><strong>{label}</strong></h3>
+    <div id="stats">
+    <h1 id="time-left">{timer()}</h1>
+    </div> 
+  </Row>
+
+    <Col>   
+     <span> <Button  variant="success" size="lg" id="start_stop" type="button" onClick={() => dispatch(countDown())}>Start/Stop</Button></span>     
+     <span>  <Button  variant="warning" size="lg" id="reset" type="button" onClick={() => dispatch(reset())}>Reset</Button></span>
+    </Col>
+     
+      <audio ref={audioRef} id="beep" src={audio}></audio>
+    
+      <br/>
+  
+  </Container>
   );
 }

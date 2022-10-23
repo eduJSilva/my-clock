@@ -154,8 +154,8 @@ if (stateChange===false){
   console.log("BEGINNOW NEWSESSION: "+ timeLeft)
  
   setTimeout(()=> {
-    dispatch(changeLabel("Session"));
     dispatch(newSessionBegins());
+    dispatch(changeLabel("Session"));
       dispatch(countDown());
       stateChange= true;
     },0)
