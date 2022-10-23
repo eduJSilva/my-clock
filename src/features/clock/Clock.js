@@ -86,7 +86,7 @@ if (timeLeft===0){
   </Row>
   <br/>
   <Row id="statRow">
-  <h3 id="timer-label">{label}</h3>
+  <h3 id="timer-label"><strong>{label}</strong></h3>
     <div id="stats">
     <h1 id="time-left">{timer()}</h1>
     </div> 

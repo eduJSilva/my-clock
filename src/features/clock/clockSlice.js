@@ -152,27 +152,25 @@ if(timeLeft===0){
 
 if (stateChange===false){
   console.log("BEGINNOW NEWSESSION: "+ timeLeft)
- 
-  setTimeout(()=> {
+  
+
+  setTimeout(()=> { 
     dispatch(newSessionBegins());
-    dispatch(changeLabel("Session"));
-      dispatch(countDown());
+    dispatch(countDown());
+    dispatch(changeLabel("Session"));     
       stateChange= true;
-    },1000)
+    },1000) 
     }
  
 if (stateChange===true){
   console.log("BEGINNOW BREAK: "+ timeLeft)
  
   setTimeout(()=> {
-  
-    dispatch(
-      newCountdownBegins());
-      dispatch(changeLabel("Break"));
-      dispatch(countDown());
-      stateChange= false;     
+    dispatch(newCountdownBegins());
+    dispatch(countDown());
+      dispatch(changeLabel("Break"));   
+      stateChange= false;  
       },1000)
-      
 }
 
 
