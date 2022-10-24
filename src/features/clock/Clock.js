@@ -1,5 +1,5 @@
 import { useSelector, useDispatch} from 'react-redux';
-import {useRef } from 'react';
+import {useRef} from 'react';
 
 import { Button } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
@@ -21,30 +21,53 @@ import {
   sessionIncrement, 
   sessionDecrement,
   countDown,
+  changeLabel,
+  newCountdownBegins,
+  newSessionBegins,
 } from './clockSlice';
+
+let label='Session';
 
 export function Clock() {
     const breakLength = useSelector(selectBreakLength);
     const sessionLength = useSelector(selectSessionLength);
     const timeLeft = useSelector(selectTimeLeft);
     const audio = useSelector(selectAudio);
-    const label = useSelector(selectTimerLabel);
+   
 
     const dispatch = useDispatch();
 
     const audioRef = useRef(null);
- 
+
 function timer() {
-  if (timeLeft <0)
+  if (timeLeft <=0)
   return '00:00';
   if (timeLeft ===3600)
   return '60:00';
  return moment(timeLeft*1000).format("mm:ss")
 }
+
+setTimeout(()=>
+{ 
+  if(label==='Break' && timeLeft===0) {
+    label='Session'; 
+    dispatch(newSessionBegins());  
+    audioRef.current.play();
+    dispatch(countDown());
+  }},1000)
+      
+    setTimeout(()=>{
+    if(label==='Session' && timeLeft===0) {
+      label='Break';
+      dispatch(newCountdownBegins());   
+      audioRef.current.play();
+      dispatch(countDown()); 
+       }
+    },1000);
+
   
-if (timeLeft===0){
-  audioRef.current.play();
-  dispatch(countDown())}
+     
+ 
 
 
   return (
@@ -86,7 +109,7 @@ if (timeLeft===0){
   </Row>
   <br/>
   <Row id="statRow">
-  <h3 id="timer-label"><strong>{label}</strong></h3>
+  <h3 id="timer-label">{label}</h3>
     <div id="stats">
     <h1 id="time-left">{timer()}</h1>
     </div> 
@@ -94,7 +117,7 @@ if (timeLeft===0){
 
     <Col>   
      <span> <Button  variant="success" size="lg" id="start_stop" type="button" onClick={() => dispatch(countDown())}>Start/Stop</Button></span>     
-     <span>  <Button  variant="warning" size="lg" id="reset" type="button" onClick={() => dispatch(reset())}>Reset</Button></span>
+     <span>  <Button  variant="warning" size="lg" id="reset" type="button" onClick={() => {dispatch(reset()); label='Session'}}>Reset</Button></span>
     </Col>
      
       <audio ref={audioRef} id="beep" src={audio}></audio>

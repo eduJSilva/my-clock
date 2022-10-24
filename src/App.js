@@ -12,9 +12,9 @@ function App() {
       </header>
       <section>      
         <div>
-        <p>
+    
         <strong>25 + 5 Clock</strong> <h5>React-Redux Toolkit app</h5> 
-        </p>
+        
         <span>
           <span>Designed and Coded By </span>
           <a

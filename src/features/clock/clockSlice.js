@@ -13,12 +13,13 @@ const initialState = {
   min: 1,
   intervalo:null,
   start: false,
-  audio: "https://sampleswap.org/samples-ghost/SOUND%20EFFECTS%20and%20NOISES/Electro%20and%20Synthetic/196[kb]watch_alarm.wav.mp3"
+  audio: "https://sampleswap.org/samples-ghost/SOUND%20EFFECTS%20and%20NOISES/Electro%20and%20Synthetic/196[kb]watch_alarm.wav.mp3",
+  changeLabel: false
 
 };
 
 let newStart = initialState.start;
-let stateChange = false;
+//let stateChange = false;
 let newIntervalo =initialState.intervalo;
 
 
@@ -57,8 +58,8 @@ export const clockSlice = createSlice({
       state.breakLength = 5;
       state.sessionLength = 25;
       state.timeLeft = 1500;
-      state.timerLabel="Session";
-      console.log("TIMELEFTNOW: "+ state.timeLeft)
+      const label = document.getElementById('timer-label');
+      label.value="Session";
  
     },
     breakIncrement: (state) => {
@@ -97,10 +98,7 @@ export const clockSlice = createSlice({
     newCountdownBegins: (state) =>{
       clearInterval(newIntervalo);
         newIntervalo= null;
-        state.timeLeft= state.breakLength*60
-     
-    console.log("ACAAHORA: "+ state.timeLeft)
-      
+        state.timeLeft= state.breakLength*60      
     },
 
     newSessionBegins: (state) =>{
@@ -141,41 +139,12 @@ export const selectTimeLeft = (state) => state.clock.timeLeft;
 export const selectIntervalo = (state) => state.clock.intervalo;
 export const selectAudio = (state) => state.clock.audio;
 export const selectTimerLabel = (state) => state.clock.timerLabel;
+export const selectChangeLabel = (state) => state.clock.changeLabel;
 // We can also write thunks by hand, which may contain both sync and async logic.
 // Here's an example of conditionally dispatching actions based on current state.
 export const countDown = () => (dispatch, getState) => {
-  stateChange= !stateChange
   newStart = !newStart  
   let timeLeft = selectTimeLeft(getState());
-
-if(timeLeft===0){
-
-if (stateChange===false){
-  console.log("BEGINNOW NEWSESSION: "+ timeLeft)
-  
-
-  setTimeout(()=> { 
-    dispatch(newSessionBegins());
-    dispatch(countDown());
-    dispatch(changeLabel("Session"));     
-      stateChange= true;
-    },1000) 
-    }
- 
-if (stateChange===true){
-  console.log("BEGINNOW BREAK: "+ timeLeft)
- 
-  setTimeout(()=> {
-    dispatch(newCountdownBegins());
-    dispatch(countDown());
-      dispatch(changeLabel("Break"));   
-      stateChange= false;  
-      },1000)
-}
-
-
-  };
-
 
  if(newIntervalo===null){
   newStart=true;
@@ -185,7 +154,6 @@ if (stateChange===true){
 if(newStart===false){
       clearInterval(newIntervalo);
       newIntervalo= null;
-  console.log("RESET, clearInterval:" + newIntervalo)
 }
 
 };
