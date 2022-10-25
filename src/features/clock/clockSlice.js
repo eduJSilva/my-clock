@@ -14,8 +14,6 @@ const initialState = {
   intervalo:null,
   start: false,
   audio: "https://sampleswap.org/samples-ghost/SOUND%20EFFECTS%20and%20NOISES/Electro%20and%20Synthetic/196[kb]watch_alarm.wav.mp3",
-  changeLabel: false
-
 };
 
 let newStart = initialState.start;
@@ -98,7 +96,7 @@ export const clockSlice = createSlice({
     newCountdownBegins: (state) =>{
       clearInterval(newIntervalo);
         newIntervalo= null;
-        state.timeLeft= state.breakLength*60      
+        state.timeLeft= state.breakLength*60;      
     },
 
     newSessionBegins: (state) =>{
@@ -107,8 +105,8 @@ export const clockSlice = createSlice({
       clearInterval(newIntervalo);
         newIntervalo= null;
     },
-    changeLabel:(state, action) =>{
-      state.timerLabel = action.payload;
+    changeLabel:(state) =>{
+    state.timerLabel=(state.timerLabel==='Session')? 'Break' : 'Session';
     },
     
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -139,7 +137,6 @@ export const selectTimeLeft = (state) => state.clock.timeLeft;
 export const selectIntervalo = (state) => state.clock.intervalo;
 export const selectAudio = (state) => state.clock.audio;
 export const selectTimerLabel = (state) => state.clock.timerLabel;
-export const selectChangeLabel = (state) => state.clock.changeLabel;
 // We can also write thunks by hand, which may contain both sync and async logic.
 // Here's an example of conditionally dispatching actions based on current state.
 export const countDown = () => (dispatch, getState) => {
